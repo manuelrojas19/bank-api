@@ -14,16 +14,17 @@ public class BankDataUtil {
     public static List<BankDto> parseBankDataList(String jsonP) throws JsonProcessingException {
         String json = jsonP.substring(13, jsonP.length() - 2);
         ObjectMapper mapper = new ObjectMapper();
+
         JsonNode node = mapper.readTree(json);
+
         List<String[]> bankData = new ArrayList<>();
 
-        // TODO use flat map and filters instead
+        // TODO Improve computational complexity
 
         node.get("Servicios").elements()
                 .forEachRemaining(a -> a.elements()
                         .forEachRemaining(b -> b.elements()
-                                .forEachRemaining(c -> bankData.add(mapper.convertValue(c, String[].class))))
-                );
+                                .forEachRemaining(c -> bankData.add(mapper.convertValue(c, String[].class)))));
 
         return bankData.stream().map(BankDataMapper::bankDataArrayToBankDataDto)
                 .collect(Collectors.toList());

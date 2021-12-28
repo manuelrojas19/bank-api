@@ -1,7 +1,6 @@
 package com.ibm.academia.apirest.controller;
 
 import com.ibm.academia.apirest.dto.BankDto;
-import com.ibm.academia.apirest.dto.BankRequestDto;
 import com.ibm.academia.apirest.service.BankService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/v1/banks")
 @Slf4j
 public class BankController {
+
     @Autowired
     private BankService bankService;
 
@@ -39,11 +39,13 @@ public class BankController {
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = BankDto.class)
             )})
-    public ResponseEntity<List<BankDto>> findCloseBanks(@RequestParam(required = false) String state,
-                                                        @RequestParam(required = false) String cp) {
-        log.info("Received data --> {}, {}", state, cp);
-        List<BankDto> bankDtos = bankService.findNearBanks(state, cp);
+    public ResponseEntity<List<BankDto>> findCloseBanks(@RequestParam String state,
+                                                        @RequestParam String cp,
+                                                        @RequestParam(required = false) Double latitude,
+                                                        @RequestParam(required = false) Double longitude) {
+        log.info("Received data --> {}, {}, {}, {}", state, cp, latitude, longitude);
+        List<BankDto> bankDtos = bankService.findNearBanks(latitude, longitude, cp, state);
         log.info("Sending to the client --> {}", bankDtos);
-        return new ResponseEntity<>(bankService.findNearBanks(state, cp), HttpStatus.OK);
+        return new ResponseEntity<>(bankDtos, HttpStatus.OK);
     }
 }
