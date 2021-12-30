@@ -32,7 +32,7 @@ public class BankController {
     /**
      * EndPoint que retorna una lista de bancos y cajeros cercanos con base en los datos de ubicación
      * ingresados, se requieren dos campos obligatorios, los campos de GPS agregaran más precisión a la
-     * busqueda.
+     * búsqueda.
      *
      * @param state     cadena con el nombre del estado de la ubicación ingresada.
      * @param cp        cadena con el CP de la ubicación ingresada.
