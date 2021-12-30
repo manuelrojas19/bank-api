@@ -1,6 +1,7 @@
 package com.ibm.academia.apirest.service.impl;
 
 import com.ibm.academia.apirest.dto.BankDto;
+import com.ibm.academia.apirest.exception.NotFoundException;
 import com.ibm.academia.apirest.service.BankService;
 import com.ibm.academia.apirest.util.BankDataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class BankServiceImpl implements BankService {
     private static final String LOCALIZATION_API_URL = "https://www.banamex.com/localizador/jsonP/json5.json";
+    private static final String NOT_FOUND_ERROR_MSG = "No se encontraron bancos y sucursales cercanas";
 
     @Autowired
     private RestTemplate restTemplate;
@@ -35,9 +37,14 @@ public class BankServiceImpl implements BankService {
             throw new RuntimeException(e);
         }
 
-        return bankData.stream()
+        List<BankDto> collect = bankData.stream()
                 .filter(getFilter(latitude, longitude, cp, state))
                 .collect(Collectors.toList());
+
+        if (collect.isEmpty())
+            throw new NotFoundException(NOT_FOUND_ERROR_MSG);
+
+        return collect;
     }
 
     private Predicate<BankDto> getFilter(Double latitude, Double longitude, String cp, String state) {
