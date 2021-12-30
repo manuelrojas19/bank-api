@@ -30,6 +30,7 @@ public class BankServiceImpl implements BankService {
         ResponseEntity<String> response = restTemplate.getForEntity(LOCALIZATION_API_URL, String.class);
 
         List<BankDto> bankData;
+
         try {
             bankData = BankDataUtil.parseBankDataList(new String(response.getBody()
                     .getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8));
