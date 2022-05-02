@@ -32,7 +32,6 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
     public ResponseEntity<ExceptionResponse> missingParameter(MissingServletRequestParameterException e) {

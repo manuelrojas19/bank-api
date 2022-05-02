@@ -46,14 +46,18 @@ public class BankController {
             content = {@Content(mediaType = "application/json",
                     schema = @Schema(implementation = BankDto.class)
             )})
-    public ResponseEntity<List<BankDto>> findCloseBanks(@RequestParam String state,
-                                                        @RequestParam String cp,
+    public ResponseEntity<List<BankDto>> findCloseBanks(@RequestParam(required = false)
+                                                                String state,
+                                                        @RequestParam(required = false)
+                                                                String cp,
                                                         @RequestParam(required = false)
                                                         @Min(value = -90, message = "El valor mínimo de la latitud es -90")
-                                                        @Max(value = 90, message = "El valor máximo de la latitud es 90") Double latitude,
+                                                        @Max(value = 90, message = "El valor máximo de la latitud es 90")
+                                                                Double latitude,
                                                         @RequestParam(required = false)
                                                         @Min(value = -180, message = "El valor mínimo de la longitud es -180")
-                                                        @Max(value = 180, message = "El valor máximo de la longitud es 180") Double longitude) {
+                                                        @Max(value = 180, message = "El valor máximo de la longitud es 180")
+                                                                Double longitude) {
         log.info("Received data --> {}, {}, {}, {}", state, cp, latitude, longitude);
         List<BankDto> bankDtos = bankService.findNearBanks(latitude, longitude, cp, state);
         log.info("Sending to the client --> {}", bankDtos);
