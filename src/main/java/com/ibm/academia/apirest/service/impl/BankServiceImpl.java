@@ -1,32 +1,80 @@
 package com.ibm.academia.apirest.service.impl;
 
-import com.ibm.academia.apirest.dto.BankDto;
-import com.ibm.academia.apirest.exception.NotFoundException;
+import com.ibm.academia.apirest.entity.BankEntity;
+import com.ibm.academia.apirest.mapper.BankDataMapper;
+import com.ibm.academia.apirest.model.*;
+import com.ibm.academia.apirest.repository.BankRepository;
 import com.ibm.academia.apirest.service.BankService;
-import com.ibm.academia.apirest.service.CitiBankDataService;
-import com.ibm.academia.apirest.util.BankDataFilter;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class BankServiceImpl implements BankService {
 
-    private static final String NOT_FOUND_ERROR_MSG = "No se encontraron bancos o sucursales cercanas";
+  public static final double LOCATION_MARGIN = 0.05;
 
-    private CitiBankDataService citiBankDataService;
+  private final BankRepository bankRepository;
 
-    @Override
-    public List<BankDto> findNearBanks(Double latitude, Double longitude, String cp, String state) {
-        List<BankDto> collect = citiBankDataService.getBankData().parallelStream()
-                .filter(BankDataFilter.getFilter(latitude, longitude, cp, state))
-                .collect(Collectors.toList());
-        if (collect.isEmpty())
-            throw new NotFoundException(NOT_FOUND_ERROR_MSG);
-        return collect;
+  @Override
+  @Transactional(readOnly = true)
+  public ResponseEntity<FindBankResponse> findBanks(
+      Pageable pageable,
+      Double latitude,
+      Double longitude,
+      String postalCode,
+      String state,
+      String address) {
+
+    Page<BankEntity> bankEntityPage =
+        getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address);
+
+    log.info("Bank data retrieved successfully.");
+
+    List<BankDto> bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
+
+    log.info("Returning bank data to the client.");
+
+    return ResponseEntity.ok(
+        FindBankResponse.builder()
+            .data(BankDataMapper.bankDtoListToBankData(bankDtoList))
+            .page(BankDataMapper.bankEntityPageToBankPage(bankEntityPage))
+            .build());
+  }
+
+  private Page<BankEntity> getBankEntitiesByFilterData(
+      Pageable pageable,
+      Double latitude,
+      Double longitude,
+      String postalCode,
+      String state,
+      String address) {
+    if (Objects.nonNull(latitude) && Objects.nonNull(longitude)) {
+      return bankRepository.findAllByLocation_LatitudeBetweenAndLocation_LongitudeBetween(
+          latitude - LOCATION_MARGIN,
+          latitude + LOCATION_MARGIN,
+          longitude - LOCATION_MARGIN,
+          longitude + LOCATION_MARGIN,
+          pageable);
+    } else if (Objects.nonNull(postalCode) && Objects.nonNull(state)) {
+      return bankRepository.findAllByPostalCodeAndStateIgnoreCase(postalCode, state, pageable);
+    } else if (Objects.nonNull(postalCode)) {
+      return bankRepository.findAllByPostalCode(postalCode, pageable);
+    } else if (Objects.nonNull(state)) {
+      return bankRepository.findAllByStateIgnoreCase(state, pageable);
+    } else if (Objects.nonNull(address)) {
+      return bankRepository.findAllByAddressContainingIgnoreCase(address, pageable);
+    } else {
+      return bankRepository.findAll(pageable);
     }
+  }
 }

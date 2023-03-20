@@ -1,5 +1,15 @@
 server:
-  port: 8088
+  port: 8080
 spring:
   application:
     name: geo-bank-api
+  data:
+    mongodb:
+      database: atm_data_db
+      port: 27017
+      host: localhost
+
+web-client:
+  localization:
+    url: https://www.banamex.com/localizador/jsonP/json5.json
+

@@ -1,4 +1,6 @@
 package com.ibm.academia.apirest.exception;
+
+import com.ibm.academia.apirest.model.ExceptionResponseDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,48 +13,48 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import javax.validation.ConstraintViolationException;
 
-@ControllerAdvice
 @Slf4j
+@ControllerAdvice
 public class GlobalExceptionHandler {
     private static final String NOT_READABLE_ERROR_MSG = "No se ingresaron datos o son incorrectos";
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(value = NotFoundException.class)
-    public ResponseEntity<ExceptionResponse> notFoundHandler(NotFoundException e) {
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  @ExceptionHandler(value = NotFoundException.class)
+  public ResponseEntity<ExceptionResponseDto> notFoundHandler(NotFoundException e) {
         log.error(e.getMessage());
-        ExceptionResponse response = ExceptionResponse.builder().message(e.getMessage()).build();
+        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionResponse> notReadableBodyHandler(HttpMessageNotReadableException e) {
+    public ResponseEntity<ExceptionResponseDto> notReadableBodyHandler(HttpMessageNotReadableException e) {
         log.error(e.getMessage());
-        ExceptionResponse response = ExceptionResponse.builder().message(NOT_READABLE_ERROR_MSG).build();
+        ExceptionResponseDto response = ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    public ResponseEntity<ExceptionResponse> missingParameter(MissingServletRequestParameterException e) {
+    public ResponseEntity<ExceptionResponseDto> missingParameter(MissingServletRequestParameterException e) {
         log.error(e.getMessage());
-        ExceptionResponse response = ExceptionResponse.builder().message(e.getMessage()).build();
+        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ExceptionResponse> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
+    public ResponseEntity<ExceptionResponseDto> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
         log.error(e.getMessage());
-        ExceptionResponse response = ExceptionResponse.builder().message(NOT_READABLE_ERROR_MSG).build();
+        ExceptionResponseDto response = ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponse> constraintViolationExceptionHandler(ConstraintViolationException e) {
+    public ResponseEntity<ExceptionResponseDto> constraintViolationExceptionHandler(ConstraintViolationException e) {
         log.error(e.getMessage());
-        ExceptionResponse response = ExceptionResponse.builder().message(e.getMessage()).build();
+        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 }
