@@ -57,8 +57,8 @@ public class BankDataMapper {
 
   public static List<BankDto> bankEntityPageToBankDtoList(Page<BankEntity> bankEntityPage) {
     return bankEntityPage.stream()
-            .map(BankDataMapper::bankEntityToBankDto)
-            .collect(Collectors.toList());
+        .map(BankDataMapper::bankEntityToBankDto)
+        .collect(Collectors.toList());
   }
 
   private static BankDto bankEntityToBankDto(BankEntity bankEntity) {

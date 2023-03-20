@@ -11,10 +11,9 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Location {
 
-    @JsonProperty("Latitude")
-    Double latitude;
+  @JsonProperty("Latitude")
+  Double latitude;
 
-    @JsonProperty("Longitude")
-    Double longitude;
-
+  @JsonProperty("Longitude")
+  Double longitude;
 }

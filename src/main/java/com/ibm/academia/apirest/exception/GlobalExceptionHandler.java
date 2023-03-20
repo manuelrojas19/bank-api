@@ -16,45 +16,51 @@ import javax.validation.ConstraintViolationException;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String NOT_READABLE_ERROR_MSG = "No se ingresaron datos o son incorrectos";
+  private static final String NOT_READABLE_ERROR_MSG = "No se ingresaron datos o son incorrectos";
 
   @ResponseStatus(HttpStatus.NOT_FOUND)
   @ExceptionHandler(value = NotFoundException.class)
   public ResponseEntity<ExceptionResponseDto> notFoundHandler(NotFoundException e) {
-        log.error(e.getMessage());
-        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
+    log.error(e.getMessage());
+    ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
+    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+  }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = HttpMessageNotReadableException.class)
-    public ResponseEntity<ExceptionResponseDto> notReadableBodyHandler(HttpMessageNotReadableException e) {
-        log.error(e.getMessage());
-        ExceptionResponseDto response = ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(value = HttpMessageNotReadableException.class)
+  public ResponseEntity<ExceptionResponseDto> notReadableBodyHandler(
+      HttpMessageNotReadableException e) {
+    log.error(e.getMessage());
+    ExceptionResponseDto response =
+        ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    public ResponseEntity<ExceptionResponseDto> missingParameter(MissingServletRequestParameterException e) {
-        log.error(e.getMessage());
-        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(value = MissingServletRequestParameterException.class)
+  public ResponseEntity<ExceptionResponseDto> missingParameter(
+      MissingServletRequestParameterException e) {
+    log.error(e.getMessage());
+    ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<ExceptionResponseDto> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
-        log.error(e.getMessage());
-        ExceptionResponseDto response = ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)
+  public ResponseEntity<ExceptionResponseDto> methodArgumentTypeMismatchExceptionHandler(
+      MethodArgumentTypeMismatchException e) {
+    log.error(e.getMessage());
+    ExceptionResponseDto response =
+        ExceptionResponseDto.builder().message(NOT_READABLE_ERROR_MSG).build();
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity<ExceptionResponseDto> constraintViolationExceptionHandler(ConstraintViolationException e) {
-        log.error(e.getMessage());
-        ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(value = ConstraintViolationException.class)
+  public ResponseEntity<ExceptionResponseDto> constraintViolationExceptionHandler(
+      ConstraintViolationException e) {
+    log.error(e.getMessage());
+    ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
+    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+  }
 }

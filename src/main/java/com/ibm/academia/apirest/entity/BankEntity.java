@@ -12,27 +12,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class BankEntity {
 
-    @Id
-    String id;
+  @Id String id;
 
-    String name;
+  String name;
 
-    String street;
+  String street;
 
-    String address;
+  String address;
 
-    String references;
+  String references;
 
-    String state;
+  String state;
 
-    String postalCode;
+  String postalCode;
 
-    String type;
+  String type;
 
-    String phone;
+  String phone;
 
-    OpeningTime openingTime;
+  OpeningTime openingTime;
 
-    Location location;
-
+  Location location;
 }

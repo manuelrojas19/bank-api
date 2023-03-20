@@ -12,37 +12,36 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BankDto {
 
-    @JsonProperty("Id")
-    String id;
+  @JsonProperty("Id")
+  String id;
 
-    @JsonProperty("Name")
-    String name;
+  @JsonProperty("Name")
+  String name;
 
-    @JsonProperty("Street")
-    String street;
+  @JsonProperty("Street")
+  String street;
 
-    @JsonProperty("Address")
-    String address;
+  @JsonProperty("Address")
+  String address;
 
-    @JsonProperty("References")
-    String references;
+  @JsonProperty("References")
+  String references;
 
-    @JsonProperty("State")
-    String state;
+  @JsonProperty("State")
+  String state;
 
-    @JsonProperty("PostalCode")
-    String postalCode;
+  @JsonProperty("PostalCode")
+  String postalCode;
 
-    @JsonProperty("Type")
-    String type;
+  @JsonProperty("Type")
+  String type;
 
-    @JsonProperty("PhoneNumber")
-    String phoneNumber;
+  @JsonProperty("PhoneNumber")
+  String phoneNumber;
 
-    @JsonProperty("OpeningTime")
-    OpeningTime openingTime;
+  @JsonProperty("OpeningTime")
+  OpeningTime openingTime;
 
-    @JsonProperty("Location")
-    Location location;
-
+  @JsonProperty("Location")
+  Location location;
 }

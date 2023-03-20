@@ -12,10 +12,9 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OpeningTime {
 
-    @JsonProperty("Open")
-    String open;
+  @JsonProperty("Open")
+  String open;
 
-    @JsonProperty("Close")
-    String close;
-
+  @JsonProperty("Close")
+  String close;
 }

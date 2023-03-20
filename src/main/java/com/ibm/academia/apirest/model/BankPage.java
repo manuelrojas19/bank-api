@@ -12,16 +12,15 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BankPage {
 
-    @JsonProperty("Size")
-    Integer size;
+  @JsonProperty("Size")
+  Integer size;
 
-    @JsonProperty("TotalElements")
-    Long totalElements;
+  @JsonProperty("TotalElements")
+  Long totalElements;
 
-    @JsonProperty("TotalPages")
-    Integer totalPages;
+  @JsonProperty("TotalPages")
+  Integer totalPages;
 
-    @JsonProperty("Number")
-    Integer number;
-
+  @JsonProperty("Number")
+  Integer number;
 }

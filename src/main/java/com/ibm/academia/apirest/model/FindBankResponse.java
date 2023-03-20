@@ -12,10 +12,9 @@ import lombok.extern.jackson.Jacksonized;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FindBankResponse {
 
-    @JsonProperty("Data")
-    BankData data;
+  @JsonProperty("Data")
+  BankData data;
 
-    @JsonProperty("Page")
-    BankPage page;
-
+  @JsonProperty("Page")
+  BankPage page;
 }
