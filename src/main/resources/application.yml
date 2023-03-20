@@ -9,7 +9,4 @@ spring:
       port: 27017
       host: localhost
 
-web-client:
-  localization:
-    url: https://www.banamex.com/localizador/jsonP/json5.json
 

@@ -34,13 +34,13 @@ public interface BankRepository extends MongoRepository<BankEntity, String> {
       String postalCode, String state, Pageable pageable);
 
   @Cacheable(
-          cacheNames = {CacheConfig.BANK_API_CACHE_NAME},
-          key = "{#minLat, #maxLat, #minLong, #maxLong}")
+      cacheNames = {CacheConfig.BANK_API_CACHE_NAME},
+      key = "{#minLat, #maxLat, #minLong, #maxLong}")
   Page<BankEntity> findAllByLocation_LatitudeBetweenAndLocation_LongitudeBetween(
       Double minLat, Double maxLat, Double minLong, Double maxLong, Pageable pageable);
 
   @Cacheable(
-          cacheNames = {CacheConfig.BANK_API_CACHE_NAME},
-          key = "{#address}")
+      cacheNames = {CacheConfig.BANK_API_CACHE_NAME},
+      key = "{#address}")
   Page<BankEntity> findAllByAddressContainingIgnoreCase(String address, Pageable pageable);
 }
