@@ -1,12 +1,17 @@
 server:
   port: 8080
+
 spring:
   application:
-    name: geo-bank-api
+    name: bank-api
   data:
     mongodb:
       database: atm_data_db
       port: 27017
       host: localhost
+
+bank-api:
+  information:
+    host: localhost
 
 

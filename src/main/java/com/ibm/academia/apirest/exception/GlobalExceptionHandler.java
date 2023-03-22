@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolationException;
 @Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
   private static final String NOT_READABLE_ERROR_MSG = "No se ingresaron datos o son incorrectos";
 
   @ResponseStatus(HttpStatus.NOT_FOUND)

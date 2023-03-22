@@ -1,0 +1,27 @@
+version: "3.9"
+services:
+  bank-api:
+    image: manuelrojas19/bank-api
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      spring.data.mongodb.host: mongo
+    networks:
+      - techbanknet
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - "mongo_data:/data/db"
+    networks:
+      - techbanknet
+
+volumes:
+  mongo_data:
+    driver: local
+
+networks:
+  techbanknet:
