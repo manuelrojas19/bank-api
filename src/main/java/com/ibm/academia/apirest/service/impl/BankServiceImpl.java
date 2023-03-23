@@ -1,10 +1,13 @@
 package com.ibm.academia.apirest.service.impl;
 
+import static com.ibm.academia.apirest.utils.Constants.LOCATION_MARGIN;
+
 import com.ibm.academia.apirest.entity.BankEntity;
 import com.ibm.academia.apirest.mapper.BankDataMapper;
 import com.ibm.academia.apirest.model.*;
 import com.ibm.academia.apirest.repository.BankRepository;
 import com.ibm.academia.apirest.service.BankService;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,8 +23,6 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class BankServiceImpl implements BankService {
-
-  public static final double LOCATION_MARGIN = 0.05;
 
   private final BankRepository bankRepository;
 
