@@ -1,16 +1,17 @@
 package com.ibm.academia.apirest.entity;
 
-import com.ibm.academia.apirest.model.Location;
-import com.ibm.academia.apirest.model.OpeningTime;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.io.Serializable;
 
 @Value
 @Builder
 @Document
-public class BankEntity {
+public class BankEntity implements Serializable {
+
+  static final long serialVersionUID = 5036535644169621965L;
 
   @Id String id;
 
