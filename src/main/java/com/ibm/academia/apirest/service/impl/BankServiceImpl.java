@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,6 +27,8 @@ public class BankServiceImpl implements BankService {
 
   private final BankRepository bankRepository;
 
+  private final EventHubServiceImpl eventHubService;
+
   @Override
   @Transactional(readOnly = true)
   public ResponseEntity<FindBankResponse> findBanks(
@@ -34,7 +37,8 @@ public class BankServiceImpl implements BankService {
       Double longitude,
       String postalCode,
       String state,
-      String address) {
+      String address,
+      MultiValueMap<String, String> headers) {
 
     Page<BankEntity> bankEntityPage =
         getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address);
@@ -44,6 +48,8 @@ public class BankServiceImpl implements BankService {
     List<BankDto> bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
 
     log.info("Returning bank data to the client.");
+
+    eventHubService.sendLog(headers);
 
     return ResponseEntity.ok(
         FindBankResponse.builder()

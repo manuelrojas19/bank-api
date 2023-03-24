@@ -3,7 +3,6 @@ package com.ibm.academia.apirest.config;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,13 +19,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @EnableCaching
 @Configuration
-public class RedisCacheConfig extends CachingConfigurerSupport {
-
-  @Value(value = "${spring.redis.host}")
-  private String host;
-
-  @Value(value = "${spring.redis.port}")
-  private int port;
+public class RedisCacheConfig {
 
   @Value(value = "${redis.timeout}")
   private int timeout;
@@ -38,8 +31,6 @@ public class RedisCacheConfig extends CachingConfigurerSupport {
   public JedisConnectionFactory jedisConnectionFactory() {
 
     var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-    redisStandaloneConfiguration.setHostName(host);
-    redisStandaloneConfiguration.setPort(port);
 
     var jedisClientConfiguration =
         JedisClientConfiguration.builder().connectTimeout(Duration.ofSeconds(timeout)).build();
