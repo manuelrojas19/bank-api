@@ -2,11 +2,13 @@ server:
   port: 8080
 
 spring:
+  cloud:
+    aws:
+      sqs:
+        endpoint: http://localhost:4566
+        region: eu-central-1
   cache:
     type: redis
-  redis:
-    host: localhost
-    port: 6379
   application:
     name: bank-api
   data:
@@ -14,12 +16,18 @@ spring:
       database: atm_data_db
       port: 27017
       host: localhost
+    redis:
+      host: localhost
+      port: 6379
 
 redis:
   timeout: 2000
   cache-timeout: 1
 
 bank-api:
+  sqs:
+    queue:
+      name: send-eventhub
   information:
     host: localhost
 
