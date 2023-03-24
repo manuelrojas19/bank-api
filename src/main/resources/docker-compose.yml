@@ -18,8 +18,28 @@ services:
       - "mongo_data:/data/db"
     networks:
       - techbanknet
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - techbanknet
+  aws-local:
+    image: localstack/localstack:1.3
+    ports:
+      - "4566:4566"
+      - "8283:8080"
+    environment:
+      - "SERVICES=sqs,sns"
+    volumes:
+      - "./localstack_bootstrap:/docker-entrypoint-initaws.d/"
+    networks:
+      - techbanknet
 
 volumes:
+  redis_data:
+    driver: local
   mongo_data:
     driver: local
 

@@ -2,18 +2,15 @@ package com.ibm.academia.apirest.controller;
 
 import com.ibm.academia.apirest.model.FindBankResponse;
 import com.ibm.academia.apirest.service.BankService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Validated
@@ -48,10 +45,11 @@ public class BankController {
       @RequestParam(required = false)
           @Min(value = -180, message = "El valor mínimo de la longitud es -180")
           @Max(value = 180, message = "El valor máximo de la longitud es 180")
-          Double longitude) {
+          Double longitude,
+      @RequestHeader MultiValueMap<String, String> headers) {
 
     ResponseEntity<FindBankResponse> response =
-        bankService.findBanks(pageable, latitude, longitude, postalCode, state, address);
+        bankService.findBanks(pageable, latitude, longitude, postalCode, state, address, headers);
 
     log.info("Sending to the client --> {}", response);
 

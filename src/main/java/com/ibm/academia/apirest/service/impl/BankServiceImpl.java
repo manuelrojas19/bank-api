@@ -1,10 +1,13 @@
 package com.ibm.academia.apirest.service.impl;
 
+import static com.ibm.academia.apirest.utils.Constants.LOCATION_MARGIN;
+
 import com.ibm.academia.apirest.entity.BankEntity;
 import com.ibm.academia.apirest.mapper.BankDataMapper;
 import com.ibm.academia.apirest.model.*;
 import com.ibm.academia.apirest.repository.BankRepository;
 import com.ibm.academia.apirest.service.BankService;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -12,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Objects;
@@ -21,9 +25,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class BankServiceImpl implements BankService {
 
-  public static final double LOCATION_MARGIN = 0.05;
-
   private final BankRepository bankRepository;
+
+  private final EventHubServiceImpl eventHubService;
 
   @Override
   @Transactional(readOnly = true)
@@ -33,7 +37,8 @@ public class BankServiceImpl implements BankService {
       Double longitude,
       String postalCode,
       String state,
-      String address) {
+      String address,
+      MultiValueMap<String, String> headers) {
 
     Page<BankEntity> bankEntityPage =
         getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address);
@@ -43,6 +48,8 @@ public class BankServiceImpl implements BankService {
     List<BankDto> bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
 
     log.info("Returning bank data to the client.");
+
+    eventHubService.sendLog(headers);
 
     return ResponseEntity.ok(
         FindBankResponse.builder()
