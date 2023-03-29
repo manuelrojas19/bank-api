@@ -1,5 +1,6 @@
 package com.ibm.academia.apirest.service.impl;
 
+import com.ibm.academia.apirest.service.EventHubService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,7 @@ import software.amazon.awssdk.services.sqs.SqsClient;
 
 @Slf4j
 @Service
-public class EventHubServiceImpl {
+public class EventHubServiceImpl implements EventHubService {
 
   private final SqsClient sqsClient;
 
@@ -21,7 +22,7 @@ public class EventHubServiceImpl {
     this.sqsClient = sqsClient;
   }
 
-  public final void sendLog(MultiValueMap<String, String> headers) {
+  public final void sendHeadersToEventHub(MultiValueMap<String, String> headers) {
 
     log.debug("Received headers --> {}", headers);
 

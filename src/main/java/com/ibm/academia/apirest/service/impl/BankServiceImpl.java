@@ -8,6 +8,7 @@ import com.ibm.academia.apirest.model.*;
 import com.ibm.academia.apirest.repository.BankRepository;
 import com.ibm.academia.apirest.service.BankService;
 
+import com.ibm.academia.apirest.service.EventHubService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ public class BankServiceImpl implements BankService {
 
   private final BankRepository bankRepository;
 
-  private final EventHubServiceImpl eventHubService;
+  private final EventHubService eventHubService;
 
   @Override
   @Transactional(readOnly = true)
@@ -40,16 +41,16 @@ public class BankServiceImpl implements BankService {
       String address,
       MultiValueMap<String, String> headers) {
 
-    Page<BankEntity> bankEntityPage =
+    var bankEntityPage =
         getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address);
 
     log.info("Bank data retrieved successfully.");
 
-    List<BankDto> bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
+    var bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
 
     log.info("Returning bank data to the client.");
 
-    eventHubService.sendLog(headers);
+    eventHubService.sendHeadersToEventHub(headers);
 
     return ResponseEntity.ok(
         FindBankResponse.builder()
