@@ -37,14 +37,14 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
   }
 
-  @ResponseStatus(HttpStatus.BAD_REQUEST)
-  @ExceptionHandler(value = MissingServletRequestParameterException.class)
-  public ResponseEntity<ExceptionResponseDto> missingParameter(
-      MissingServletRequestParameterException e) {
-    log.error(e.getMessage());
-    ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
-    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-  }
+//  @ResponseStatus(HttpStatus.BAD_REQUEST)
+//  @ExceptionHandler(value = MissingServletRequestParameterException.class)
+//  public ResponseEntity<ExceptionResponseDto> missingParameter(
+//      MissingServletRequestParameterException e) {
+//    log.error(e.getMessage());
+//    ExceptionResponseDto response = ExceptionResponseDto.builder().message(e.getMessage()).build();
+//    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//  }
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(value = MethodArgumentTypeMismatchException.class)

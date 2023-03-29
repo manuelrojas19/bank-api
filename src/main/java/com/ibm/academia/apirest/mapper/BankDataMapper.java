@@ -3,19 +3,13 @@ package com.ibm.academia.apirest.mapper;
 import com.ibm.academia.apirest.entity.BankEntity;
 import com.ibm.academia.apirest.model.*;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BankDataMapper {
 
-  public static List<BankDto> bankEntityPageToBankDtoList(Page<BankEntity> bankEntityPage) {
-    return bankEntityPage.stream()
-        .map(BankDataMapper::bankEntityToBankDto)
-        .collect(Collectors.toList());
-  }
-
-  private static BankDto bankEntityToBankDto(BankEntity bankEntity) {
+  public static BankDto bankEntityToBankDto(BankEntity bankEntity) {
     return BankDto.builder()
         .id(bankEntity.getId())
         .name(bankEntity.getName())
@@ -38,16 +32,24 @@ public class BankDataMapper {
         .build();
   }
 
-  public static BankData bankDtoListToBankData(List<BankDto> bankDtoList) {
+  private static BankData bankDtoListToBankData(List<BankDto> bankDtoList) {
     return BankData.builder().banks(bankDtoList).build();
   }
 
-  public static BankPage bankEntityPageToBankPage(Page<BankEntity> bankEntityPage) {
+  public static FindBankResponse toFindBankResponse(
+      Pageable pageable, List<BankDto> bankDtoList, Long bankTotalNumber) {
+    return FindBankResponse.builder()
+        .data(BankDataMapper.bankDtoListToBankData(bankDtoList))
+        .page(buildPageResponse(pageable.getPageSize(), pageable.getPageNumber(), bankTotalNumber))
+        .build();
+  }
+
+  private static BankPage buildPageResponse(
+      Integer pageSize, Integer pageNumber, Long totalElements) {
     return BankPage.builder()
-        .number(bankEntityPage.getNumber())
-        .size(bankEntityPage.getSize())
-        .totalElements(bankEntityPage.getTotalElements())
-        .totalPages(bankEntityPage.getTotalPages())
+        .number(pageNumber)
+        .totalPages((int) Math.ceil(totalElements / (double) pageSize))
+        .totalElements(totalElements)
         .build();
   }
 }

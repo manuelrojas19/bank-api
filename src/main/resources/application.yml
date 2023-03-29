@@ -25,6 +25,10 @@ redis:
   cache-timeout: 1
 
 bank-api:
+  apis:
+    base-path: /api/v2
+    find-banks-path: /banks
+
   sqs:
     queue:
       name: send-eventhub

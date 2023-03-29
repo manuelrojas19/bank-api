@@ -7,19 +7,17 @@ import com.ibm.academia.apirest.mapper.BankDataMapper;
 import com.ibm.academia.apirest.model.*;
 import com.ibm.academia.apirest.repository.BankRepository;
 import com.ibm.academia.apirest.service.BankService;
-
 import com.ibm.academia.apirest.service.EventHubService;
+import java.util.Objects;
+import com.ibm.academia.apirest.utils.Constants;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
-
-import java.util.List;
-import java.util.Objects;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Service
@@ -28,11 +26,9 @@ public class BankServiceImpl implements BankService {
 
   private final BankRepository bankRepository;
 
-  private final EventHubService eventHubService;
-
   @Override
   @Transactional(readOnly = true)
-  public ResponseEntity<FindBankResponse> findBanks(
+  public Mono<FindBankResponse> findBanks(
       Pageable pageable,
       Double latitude,
       Double longitude,
@@ -41,25 +37,16 @@ public class BankServiceImpl implements BankService {
       String address,
       MultiValueMap<String, String> headers) {
 
-    var bankEntityPage =
-        getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address);
-
-    log.info("Bank data retrieved successfully.");
-
-    var bankDtoList = BankDataMapper.bankEntityPageToBankDtoList(bankEntityPage);
-
-    log.info("Returning bank data to the client.");
-
-    eventHubService.sendHeadersToEventHub(headers);
-
-    return ResponseEntity.ok(
-        FindBankResponse.builder()
-            .data(BankDataMapper.bankDtoListToBankData(bankDtoList))
-            .page(BankDataMapper.bankEntityPageToBankPage(bankEntityPage))
-            .build());
+    return getBankEntitiesByFilterData(pageable, latitude, longitude, postalCode, state, address)
+        .map(BankDataMapper::bankEntityToBankDto)
+        .collectList()
+        .zipWith(bankRepository.countAllBy())
+        .map(tuples -> BankDataMapper.toFindBankResponse(pageable, tuples.getT1(), tuples.getT2()))
+        .doOnNext(bank -> log.info(Constants.BANK_INFO_RETRIEVED_LOG_MSG, bank))
+        .doOnError(error -> log.error(Constants.BANK_INFO_ERROR_LOG_MSG, error));
   }
 
-  private Page<BankEntity> getBankEntitiesByFilterData(
+  private Flux<BankEntity> getBankEntitiesByFilterData(
       Pageable pageable,
       Double latitude,
       Double longitude,
@@ -82,7 +69,7 @@ public class BankServiceImpl implements BankService {
     } else if (Objects.nonNull(address)) {
       return bankRepository.findAllByAddressContainingIgnoreCase(address, pageable);
     } else {
-      return bankRepository.findAll(pageable);
+      return bankRepository.findAllBy(pageable);
     }
   }
 }
