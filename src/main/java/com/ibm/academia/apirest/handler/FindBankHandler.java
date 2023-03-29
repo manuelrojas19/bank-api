@@ -1,5 +1,6 @@
 package com.ibm.academia.apirest.handler;
 
+import com.ibm.academia.apirest.model.FindBankFilterData;
 import com.ibm.academia.apirest.model.FindBankResponse;
 import com.ibm.academia.apirest.service.BankService;
 import com.ibm.academia.apirest.utils.Constants;
@@ -30,6 +31,16 @@ public class FindBankHandler implements HandlerFunction<ServerResponse> {
 
     log.info(Constants.REQUEST_RECEIVED_LOG_MSG, FindBankHandler.class.getName());
 
+    final FindBankFilterData requestData = getFindBankRequestData(request);
+
+    return ServerResponse.ok()
+        .body(bankService.findBanks(requestData), FindBankResponse.class)
+        .doOnNext(
+            response ->
+                log.info(Constants.SENDING_RESPONSE_LOG_MSG, FindBankHandler.class.getName()));
+  }
+
+  private static FindBankFilterData getFindBankRequestData(ServerRequest request) {
     final var pageable = RequestUtils.getPageRequest(request);
     final var headers = request.headers().asHttpHeaders();
 
@@ -44,13 +55,14 @@ public class FindBankHandler implements HandlerFunction<ServerResponse> {
     final var address =
         RequestUtils.getQueryParam(request, Constants.ADDRESS_QUERY_PARAM, String::toString);
 
-    return ServerResponse.ok()
-        .body(
-            bankService.findBanks(
-                pageable, latitude, longitude, postalCode, state, address, headers),
-            FindBankResponse.class)
-        .doOnNext(
-            response ->
-                log.info(Constants.SENDING_RESPONSE_LOG_MSG, FindBankHandler.class.getName()));
+    return FindBankFilterData.builder()
+        .latitude(latitude)
+        .longitude(longitude)
+        .postalCode(postalCode)
+        .state(state)
+        .address(address)
+        .pageable(pageable)
+        .headers(headers)
+        .build();
   }
 }

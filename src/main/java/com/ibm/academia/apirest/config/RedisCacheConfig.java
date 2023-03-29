@@ -1,65 +1,41 @@
 package com.ibm.academia.apirest.config;
 
-import java.time.Duration;
+import com.ibm.academia.apirest.model.FindBankResponse;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.ReactiveHashOperations;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
+import org.springframework.data.redis.serializer.*;
 
-@EnableCaching
 @Configuration
 public class RedisCacheConfig {
 
-  @Value(value = "${redis.timeout}")
-  private int timeout;
+  @Value("${spring.data.redis.host}")
+  private String redisHost;
 
-  @Value(value = "${redis.cache-timeout}")
-  private int cacheTimeout;
+  @Value("${spring.data.redis.port}")
+  private int redisPort;
 
   @Bean
-  public JedisConnectionFactory jedisConnectionFactory() {
-
-    var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-
-    var jedisClientConfiguration =
-        JedisClientConfiguration.builder().connectTimeout(Duration.ofSeconds(timeout)).build();
-
-    return new JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfiguration);
+  public LettuceConnectionFactory lettuceConnectionFactory() {
+    final var redisStandaloneConfig = new RedisStandaloneConfiguration();
+    redisStandaloneConfig.setHostName(redisHost);
+    redisStandaloneConfig.setPort(redisPort);
+    return new LettuceConnectionFactory(redisStandaloneConfig);
   }
 
   @Bean
-  public RedisTemplate<String, Object> redisTemplate() {
-    RedisTemplate<String, Object> template = new RedisTemplate<>();
-    template.setConnectionFactory(jedisConnectionFactory());
-    template.setKeySerializer(new StringRedisSerializer());
-    template.setHashKeySerializer(new StringRedisSerializer());
-    template.setHashKeySerializer(new JdkSerializationRedisSerializer());
-    template.setValueSerializer(new JdkSerializationRedisSerializer());
-    template.setEnableTransactionSupport(true);
-    template.afterPropertiesSet();
-    return template;
-  }
-
-  @Bean
-  public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-    return RedisCacheManager.builder(redisConnectionFactory)
-        .cacheDefaults(
-            RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(cacheTimeout))
-                .serializeValuesWith(
-                    RedisSerializationContext.SerializationPair.fromSerializer(
-                        new JdkSerializationRedisSerializer(getClass().getClassLoader()))))
-        .build();
+  public ReactiveHashOperations<String, Integer, FindBankResponse> redisOperations(
+      LettuceConnectionFactory connectionFactory) {
+    RedisSerializationContext<String, FindBankResponse> serializationContext =
+        RedisSerializationContext.<String, FindBankResponse>newSerializationContext(
+                new StringRedisSerializer())
+            .hashKey(new GenericToStringSerializer<>(Integer.class))
+            .hashValue(new Jackson2JsonRedisSerializer<>(FindBankResponse.class))
+            .build();
+    return new ReactiveRedisTemplate<>(connectionFactory, serializationContext).opsForHash();
   }
 }
