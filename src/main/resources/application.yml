@@ -14,20 +14,19 @@ spring:
   data:
     mongodb:
       database: atm_data_db
-      port: 27017
       host: localhost
+      port: 27017
+      password: password
     redis:
       host: localhost
       port: 6379
-
-redis:
-  timeout: 2000
-  cache-timeout: 1
+      password: password
 
 bank-api:
   apis:
     base-path: /api/v2
     find-banks-path: /banks
+    info-path: /info
 
   sqs:
     queue:
