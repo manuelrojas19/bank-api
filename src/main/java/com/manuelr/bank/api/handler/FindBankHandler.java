@@ -39,6 +39,7 @@ public class FindBankHandler implements HandlerFunction<ServerResponse> {
     return bankService
         .findBanks(requestData)
         .flatMap(findBankResponse -> ServerResponse.ok().bodyValue(findBankResponse))
+        .doOnTerminate(() -> eventHubService.sendHeadersToEventHub(requestData.getHeaders()))
         .doOnNext(response -> log.info(Constants.SENDING_RESPONSE_LOG_MSG, response))
         .doOnError(throwable -> log.error(Constants.BANK_INFO_ERROR_LOG_MSG, throwable));
   }

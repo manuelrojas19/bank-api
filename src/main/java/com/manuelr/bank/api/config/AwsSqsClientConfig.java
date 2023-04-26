@@ -1,6 +1,5 @@
 package com.manuelr.bank.api.config;
 
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +9,7 @@ import software.amazon.awssdk.auth.credentials.AwsCredentialsProviderChain;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import java.net.URI;
+import java.net.URISyntaxException;
 
 @Configuration
 public class AwsSqsClientConfig {
@@ -26,8 +26,7 @@ public class AwsSqsClientConfig {
   }
 
   @Bean
-  @SneakyThrows
-  public SqsClient sqsClient() {
+  public SqsClient sqsClient() throws URISyntaxException {
     return SqsClient.builder()
         .region(Region.of(region))
         .endpointOverride(new URI(endpoint))
@@ -36,7 +35,7 @@ public class AwsSqsClientConfig {
   }
 
   private AwsCredentialsProvider getAwsCredentialsProvider() {
-    var credentialsProvider = EnvironmentVariableCredentialsProvider.create();
+    final var credentialsProvider = EnvironmentVariableCredentialsProvider.create();
     return AwsCredentialsProviderChain.builder()
         .addCredentialsProvider(credentialsProvider)
         .build();

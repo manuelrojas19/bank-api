@@ -46,4 +46,6 @@ public final class Constants {
 
   public static final String UNSUPPORTED_OPERATION_EXCEPTION_MSG =
       "This is a utility class and cannot be instantiated";
+
+  public static final String URI_FORMATTER = "%s:%o";
 }
