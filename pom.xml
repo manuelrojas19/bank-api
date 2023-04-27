@@ -19,6 +19,8 @@
         <spring-cloud-aws.version>3.0.0-M3</spring-cloud-aws.version>
         <aws-java-sdk.version>2.18.28</aws-java-sdk.version>
         <spring-cloud.version>2022.0.0-RC2</spring-cloud.version>
+        <json-smart.version>2.4.10</json-smart.version>
+        <snakeyml.version>2.0</snakeyml.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -85,7 +87,6 @@
         <dependency>
             <groupId>io.awspring.cloud</groupId>
             <artifactId>spring-cloud-aws-starter-sqs</artifactId>
-            <version>3.0.0-M3</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -102,7 +103,16 @@
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-sqs</artifactId>
-            <version>1.12.433</version>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyml.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

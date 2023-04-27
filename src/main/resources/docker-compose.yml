@@ -16,6 +16,7 @@ services:
       - "27017:27017"
     volumes:
       - "mongo_data:/data/db"
+      - "./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d/:ro"
     networks:
       - techbanknet
   redis:
@@ -33,7 +34,7 @@ services:
     environment:
       - "SERVICES=sqs,sns"
     volumes:
-      - "./localstack_bootstrap:/docker-entrypoint-initaws.d/"
+      - "./docker-entrypoint-initaws.d:/docker-entrypoint-initaws.d/"
     networks:
       - techbanknet
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Value
 @Builder
-@Document(collection = "bank-entity")
+@Document(collection = "bankEntity")
 public class BankEntity implements Serializable {
 
   static final long serialVersionUID = 5036535644169621965L;
