@@ -12,7 +12,6 @@ import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import java.util.Collections;
 
-@Slf4j
 @Configuration
 public class RedisCacheConfig {
 
