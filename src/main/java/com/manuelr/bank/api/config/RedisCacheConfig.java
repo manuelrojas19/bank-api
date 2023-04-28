@@ -1,6 +1,7 @@
 package com.manuelr.bank.api.config;
 
 import com.manuelr.bank.api.model.FindBankResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,14 +11,23 @@ import org.springframework.data.redis.core.ReactiveHashOperations;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.data.redis.serializer.*;
 import java.util.Collections;
-import java.util.List;
 
+@Slf4j
 @Configuration
 public class RedisCacheConfig {
 
+  private final String redisClusterMasterEndpoint;
+
+  public RedisCacheConfig(
+      @Value("${spring.data.redis.cluster.master.endpoint}") String redisClusterMasterEndpoint) {
+    this.redisClusterMasterEndpoint = redisClusterMasterEndpoint;
+  }
+
   @Bean
   public LettuceConnectionFactory lettuceConnectionFactory() {
-    return new LettuceConnectionFactory();
+    final var clusterConfiguration =
+        new RedisClusterConfiguration(Collections.singletonList(redisClusterMasterEndpoint));
+    return new LettuceConnectionFactory(clusterConfiguration);
   }
 
   @Bean
@@ -31,5 +41,4 @@ public class RedisCacheConfig {
             .build();
     return new ReactiveRedisTemplate<>(connectionFactory, serializationContext).opsForHash();
   }
-
 }
